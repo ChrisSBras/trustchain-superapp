@@ -380,7 +380,9 @@ class TorrentManager private constructor(
 
         val sortedTorrents: MutableList<TorrentHandler>
 
-        unwatchedIndex = torrentFiles.size
+        unwatchedIndex = 0
+        currentIndex = 0
+
         if (unwatchedIndex == torrentFiles.size) {
             currentIndex = 0
             sortedTorrents = strategies.applyStrategy(
