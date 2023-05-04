@@ -35,6 +35,7 @@ class TorrentGossiper(Gossiper):
                                 "Key",
                                 f'{self.get_magnet_hash(video["magnet"])}?index={video["index"]}',
                             ],
+                            ["Magnet", video["magnet"]],
                             ["WatchTime", str(video["watchTime"])],
                             ["Likes", str(video["likes"])],
                             ["Duration", "0"],

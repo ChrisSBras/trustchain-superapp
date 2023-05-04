@@ -19,19 +19,6 @@ bootstrap_config = {
     "class": "DispersyBootstrapper",
     "init": {
         "ip_addresses": [
-            ("130.161.119.206", 6421),
-            ("130.161.119.206", 6422),
-            ("131.180.27.155", 6423),
-            ("131.180.27.156", 6424),
-            ("131.180.27.161", 6427),
-            ("131.180.27.161", 6521),
-            ("131.180.27.161", 6522),
-            ("131.180.27.162", 6523),
-            ("131.180.27.162", 6524),
-            ("130.161.119.215", 6525),
-            ("130.161.119.215", 6526),
-            ("130.161.119.201", 6527),
-            ("130.161.119.201", 6528),
             ("131.180.27.188", 1337),
             ("131.180.27.187", 1337),
             ("131.180.27.161", 6427),
@@ -53,7 +40,7 @@ bootstrap_config = {
             ("tracker7.ip-v8.org", 6527),
             ("tracker8.ip-v8.org", 6528),
         ],
-        "bootstrap_timeout": 0.5,
+        "bootstrap_timeout": 5,
     },
 }
 
@@ -64,7 +51,6 @@ bootstrapper = [
 
 
 async def start_nodes(timeout: int, max_peers: int):
-
     with open("/nodes.json") as f:
         json_data = json.load(f)
         f.close()
@@ -90,7 +76,12 @@ async def start_nodes(timeout: int, max_peers: int):
             [WalkerDefinition(Strategy.RandomWalk, max_peers, {"timeout": timeout})],
             bootstrapper,
             {},
-            [("started", node, )],
+            [
+                (
+                    "started",
+                    node,
+                )
+            ],
         )
         ipv8 = IPv8(
             builder.finalize(), extra_communities={"DeToksCommunity": DetoksCommunity}
