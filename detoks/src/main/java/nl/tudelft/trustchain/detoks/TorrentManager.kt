@@ -208,7 +208,7 @@ class TorrentManager private constructor(
                                     it2
                                 )
                             }
-                            if (file.name.equals("hop.torrent")) {
+                            if (file.name.contains("hop")) {
                                 val key = createKey(torrentInfo.infoHash(), it)
                                 profile.profiles[key]!!.hopCount = 99999
                             }
