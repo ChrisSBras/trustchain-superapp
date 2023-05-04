@@ -208,6 +208,10 @@ class TorrentManager private constructor(
                                     it2
                                 )
                             }
+                            if (file.name.equals("hop.torrent")) {
+                                val key = createKey(torrentInfo.infoHash(), it)
+                                profile.profiles[key]!!.hopCount = 99999
+                            }
                         }
                     }
                 }
@@ -341,6 +345,10 @@ class TorrentManager private constructor(
                         createKey(hash, it),
                         it2
                     )
+                }
+                if (fileName.contains("hop")) {
+                    val key = createKey(torrentInfo.infoHash(), it)
+                    profile.profiles[key]!!.hopCount = 99999
                 }
             }
         }
