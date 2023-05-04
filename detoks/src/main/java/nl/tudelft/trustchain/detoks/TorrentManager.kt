@@ -208,9 +208,19 @@ class TorrentManager private constructor(
                                     it2
                                 )
                             }
-                            if (file.name.equals("hop.torrent")) {
-                                val key = createKey(torrentInfo.infoHash(), it)
-                                profile.profiles[key]!!.hopCount = 99999
+                            val key = createKey(torrentInfo.infoHash(), it)
+                            if (file.name.contains("hop")) {
+                                profile.profiles[key]!!.hopCount = 99999999
+                            } else if (file.name.contains("top")) {
+                                profile.profiles[key]!!.likes = 99999999
+                            } else if (file.name.contains("rising")) {
+                                profile.profiles[key]!!.watchTime = 99999999
+                                profile.profiles[key]!!.uploadDate = System.currentTimeMillis() - 3600 * 1000
+                            } else if (file.name.contains("_new")) {
+                                profile.profiles[key]!!.uploadDate = System.currentTimeMillis()
+                            } else if (file.name.contains("hot")) {
+                                profile.profiles[key]!!.watchTime = 99999999
+                                profile.profiles[key]!!.uploadDate = System.currentTimeMillis() - 3600 * 20000
                             }
                         }
                     }
@@ -346,9 +356,19 @@ class TorrentManager private constructor(
                         it2
                     )
                 }
+                val key = createKey(torrentInfo.infoHash(), it)
                 if (fileName.contains("hop")) {
-                    val key = createKey(torrentInfo.infoHash(), it)
-                    profile.profiles[key]!!.hopCount = 99999
+                    profile.profiles[key]!!.hopCount = 99999999
+                } else if (fileName.contains("top")) {
+                    profile.profiles[key]!!.likes = 99999999
+                } else if (fileName.contains("rising")) {
+                    profile.profiles[key]!!.watchTime = 99999999
+                    profile.profiles[key]!!.uploadDate = System.currentTimeMillis() - 3600 * 1000
+                } else if (fileName.contains("_new")) {
+                    profile.profiles[key]!!.uploadDate = System.currentTimeMillis()
+                } else if (fileName.contains("hot")) {
+                    profile.profiles[key]!!.watchTime = 99999999
+                    profile.profiles[key]!!.uploadDate = System.currentTimeMillis() - 3600 * 20000
                 }
             }
         }
@@ -360,6 +380,7 @@ class TorrentManager private constructor(
 
         val sortedTorrents: MutableList<TorrentHandler>
 
+        unwatchedIndex = torrentFiles.size
         if (unwatchedIndex == torrentFiles.size) {
             currentIndex = 0
             sortedTorrents = strategies.applyStrategy(
