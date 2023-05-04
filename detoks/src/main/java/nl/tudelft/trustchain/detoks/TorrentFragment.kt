@@ -56,7 +56,9 @@ class TorrentFragment : BaseFragment(R.layout.fragment_torrent) {
             val fileStorage = torrentInfo.files()
             var filesString = ""
             for (i in 0 until fileStorage.numFiles()-1) {
-                filesString += "\n" + fileStorage.fileName(i)
+                val fileString = fileStorage.fileName(i)
+                if (fileString.substringAfterLast('.', "").equals("mp4"))
+                    filesString += "\n" + fileString
             }
             filesTV.text = getString(R.string.files, filesString)
 
