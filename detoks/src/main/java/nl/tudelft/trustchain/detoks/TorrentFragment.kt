@@ -20,6 +20,7 @@ class TorrentFragment : BaseFragment(R.layout.fragment_torrent) {
         super.onViewCreated(view, savedInstanceState)
         val infoHashTV = view.findViewById<TextView>(R.id.infoHashTextView)
         val magnetLinkTV = view.findViewById<TextView>(R.id.magnetLinkTextView)
+        val numSeedsTV = view.findViewById<TextView>(R.id.numSeedsTextView)
         val filesTV = view.findViewById<TextView>(R.id.filesTextView)
         val downloadedBytesTV = view.findViewById<TextView>(R.id.downloadedBytesTextView)
         val watchTimeTV = view.findViewById<TextView>(R.id.watchTimeTextView)
@@ -49,6 +50,10 @@ class TorrentFragment : BaseFragment(R.layout.fragment_torrent) {
             val magnetLink = torrent.makeMagnetUri()
             magnetLinkTV.text = getString(R.string.magnet_link, magnetLink)
 
+            val numSeeds = torrent.status().numSeeds()
+            val listSeeds = torrent.status().listSeeds()
+            numSeedsTV.text = getString(R.string.num_seeds, numSeeds, listSeeds)
+
             val downloadedBytes = torrent.status().totalDone()
             downloadedBytesTV.text = getString(R.string.downloaded_bytes, downloadedBytes)
 
@@ -56,7 +61,9 @@ class TorrentFragment : BaseFragment(R.layout.fragment_torrent) {
             val fileStorage = torrentInfo.files()
             var filesString = ""
             for (i in 0 until fileStorage.numFiles()-1) {
-                filesString += "\n" + fileStorage.fileName(i)
+                val fileString = fileStorage.fileName(i)
+                if (fileString.substringAfterLast('.', "").equals("mp4"))
+                    filesString += "\n" + fileString
             }
             filesTV.text = getString(R.string.files, filesString)
 

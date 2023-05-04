@@ -11,6 +11,7 @@
     <string name="seeding_rank">Seeding Rank</string>
     <string name="info_hash">Info Hash: %1$s</string>
     <string name="magnet_link">Magnet link: %1$s</string>
+    <string name="num_seeds">Number of seeders: %1$d (%2$d)</string>
     <string name="downloaded_bytes">Downloaded bytes: %1$d</string>
     <string name="files">Files: %1$s</string>
     <string name="watch_time">Total watch time: %1$d</string>
