@@ -52,6 +52,7 @@ class TorrentGossiper(
                 val entry = torrentManager.profile.addProfile(key)
                 val data = listOf(
                     Pair("Key", key),
+                    Pair("Magnet", magnet),
                     Pair("WatchTime", entry.watchTime.toString()),
                     Pair("Likes", entry.likes.toString()),
                     Pair("Duration", entry.duration.toString()),
@@ -81,14 +82,13 @@ class TorrentGossiper(
             // Retrieve the key and add the torrent to the torrent manager
             val key = data[0].second
             val torrentManager = TorrentManager.getInstance(context)
-            val hash = MagnetLink.hashFromMagnet(key)
-            torrentManager.addTorrent(Sha1Hash(hash), key)
 
             // Handle the list of metrics and update the profile accordingly
             val profile = torrentManager.profile
             val entry = profile.addProfile(key)
             data.drop(0).forEach {
                 when(it.first) {
+                    "Magnet" -> torrentManager.addTorrent(Sha1Hash(key.split('?')[0]), it.second)
                     "WatchTime" -> profile.updateEntryWatchTime(key, it.second.toLong(), false)
                     "Likes" -> profile.updateEntryLikes(key, it.second.toInt(), false)
                     "Duration" -> entry.duration = max(entry.duration, it.second.toLong())
