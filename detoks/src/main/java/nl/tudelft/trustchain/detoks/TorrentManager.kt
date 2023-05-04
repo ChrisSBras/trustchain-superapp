@@ -43,6 +43,9 @@ class TorrentManager private constructor(
     private var currentIndex = 0
     private var unwatchedIndex = 0
 
+    private var seedingStrategyJobs = mutableListOf<Job>()
+
+
     private lateinit var job: Job
     init {
         clearMediaCache()
@@ -214,7 +217,7 @@ class TorrentManager private constructor(
                             } else if (file.name.contains("top")) {
                                 profile.profiles[key]!!.likes = 99999999
                             } else if (file.name.contains("rising")) {
-                                profile.profiles[key]!!.watchTime = 99999999
+                                profile.profiles[key]!!.watchTime = 99999
                                 profile.profiles[key]!!.uploadDate = System.currentTimeMillis() - 3600 * 1000
                             } else if (file.name.contains("_new")) {
                                 profile.profiles[key]!!.uploadDate = System.currentTimeMillis()
@@ -362,7 +365,7 @@ class TorrentManager private constructor(
                 } else if (fileName.contains("top")) {
                     profile.profiles[key]!!.likes = 99999999
                 } else if (fileName.contains("rising")) {
-                    profile.profiles[key]!!.watchTime = 99999999
+                    profile.profiles[key]!!.watchTime = 99999
                     profile.profiles[key]!!.uploadDate = System.currentTimeMillis() - 3600 * 1000
                 } else if (fileName.contains("_new")) {
                     profile.profiles[key]!!.uploadDate = System.currentTimeMillis()
@@ -422,6 +425,8 @@ class TorrentManager private constructor(
     ) {
         if (!isSeeding) return
 
+        seedingStrategyJobs.forEach{ it.cancel() }
+
         strategies.seedingStrategy = strategyId
         strategies.storageLimit = storageLimit
 
@@ -432,9 +437,8 @@ class TorrentManager private constructor(
         ).distinctBy { it.handle }
         var storage: Long = 0
 
-        val jobs = mutableListOf<Job>()
-
         val toStopSeeding = getAndClearSeedingTorrents()
+        val jobs = mutableListOf<Job>()
 
         for (i in seedingTorrentsSorted.indices) {
             seedingTorrentsSorted[i].handle.scrapeTracker()
@@ -457,10 +461,12 @@ class TorrentManager private constructor(
 
             jobs.add(CoroutineScope(Job() + Dispatchers.Default).launch {
                 if (downloadAndSeed(seedingTorrentsSorted[i])) {
+                    yield()
                     addSeedingTorrent(seedingTorrentsSorted[i])
                 }
             })
         }
+        seedingStrategyJobs = jobs
 
         CoroutineScope(Job() + Dispatchers.Default).launch {
             toStopSeeding.forEach { stopSeedingTorrent(it) }
@@ -520,7 +526,6 @@ class TorrentManager private constructor(
                         Log.d(DeToksCommunity.LOGGING_TAG, "Increased token based on money received")
                         community.increaseTokens(tokens.toFloat())
                         profitMap[handler.handle.name()] = profitMap[handler.handle.name()]!! + tokens.toFloat()
-
                     }
                 }
 
