@@ -143,8 +143,8 @@ class VideosAdapter(
                     yield()
 
                     val status = handler.handle.status(TorrentHandle.QUERY_ACCURATE_DOWNLOAD_COUNTERS)
-                    fileSeedsTV.text = status.numSeeds().toString()
-                    filePeersTV.text = status.numPeers().toString()
+                    fileSeedsTV.text = "%d (%d)".format(status.numSeeds(), status.listSeeds())
+                    filePeersTV.text = "%d (%d)".format(status.numPeers(), status.listPeers())
 
                     downloadRateTV.text = "%.2f".format(status.downloadRate() / toKb.toDouble())
                     fileSizeTV.text = "%.2f".format(fileSize / firstMB)

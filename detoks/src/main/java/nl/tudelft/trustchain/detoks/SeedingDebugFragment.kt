@@ -82,8 +82,8 @@ class SeedingDebugAdapter(private val strategyData: List<TorrentHandle>) : Recyc
 
         holder.downloadTextView.text = status.state().name
         holder.uploadTextView.text = status.isSeeding.toString()
-        holder.seederTextView.text = status.listSeeds().toString()
-        holder.leecherTextView.text = status.listPeers().toString()
+        holder.seederTextView.text = "%d (%d)".format(status.numSeeds(), status.listSeeds())
+        holder.leecherTextView.text = "%d (%d)".format(status.numPeers(), status.listPeers())
     }
 
     override fun getItemCount(): Int = strategyData.size

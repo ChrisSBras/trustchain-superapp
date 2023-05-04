@@ -53,7 +53,7 @@ bootstrap_config = {
             ("tracker7.ip-v8.org", 6527),
             ("tracker8.ip-v8.org", 6528),
         ],
-        "bootstrap_timeout": 0.5,
+        "bootstrap_timeout": 5,
     },
 }
 
@@ -64,7 +64,6 @@ bootstrapper = [
 
 
 async def start_nodes(timeout: int, max_peers: int):
-
     with open("/nodes.json") as f:
         json_data = json.load(f)
         f.close()
@@ -90,7 +89,12 @@ async def start_nodes(timeout: int, max_peers: int):
             [WalkerDefinition(Strategy.RandomWalk, max_peers, {"timeout": timeout})],
             bootstrapper,
             {},
-            [("started", node, )],
+            [
+                (
+                    "started",
+                    node,
+                )
+            ],
         )
         ipv8 = IPv8(
             builder.finalize(), extra_communities={"DeToksCommunity": DetoksCommunity}
